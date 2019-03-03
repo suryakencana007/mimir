@@ -33,7 +33,6 @@ import "github.com/suryakencana007/mimir"
 ## FAQ
 ---
 
-s
 [Please do!](https://github.com/suryakencana007/mimir/blob/master/CONTRIBUTING.md) We are looking for any kind of contribution to improve and add more library function helper Mimir core funtionality and documentation. When in doubt, make a PR!
 
 ## License
