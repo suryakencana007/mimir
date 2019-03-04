@@ -36,7 +36,7 @@ func FieldAlias(val string, a string) string {
     if a != "" {
         return fmt.Sprintf(`%s.%s`, a, val)
     }
-    return fmt.Sprintf(`%s`, val)
+    return string(val)
 }
 
 func GetPagination(p *Pagination) (string, error) {

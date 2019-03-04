@@ -34,7 +34,7 @@ func TestFieldAlias(t *testing.T) {
 func TestFieldNoAlias(t *testing.T) {
     assert := assert.New(t)
     v := "value"
-    expected := fmt.Sprintf("%s", v)
+    expected := string(v)
     actual := FieldAlias(v, "")
     assert.Equal(expected, actual)
 }

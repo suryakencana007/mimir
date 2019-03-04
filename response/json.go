@@ -49,5 +49,9 @@ func WriteJSON(w http.ResponseWriter, r *http.Request, v interface{}) {
     if status, ok := r.Context().Value(constant.StatusCtxKey).(int); ok {
         w.WriteHeader(status)
     }
-    w.Write(buf.Bytes())
+    _, err := w.Write(buf.Bytes())
+    if err != nil {
+        http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
+    }
 }
