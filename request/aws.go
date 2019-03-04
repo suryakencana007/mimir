@@ -16,9 +16,9 @@ import (
     "github.com/go-chi/chi"
 )
 
-func HandleEvent(chiAdapter *chiadapter.ChiLambda, handler *chi.Mux) interface{} {
+func HandleEvent(handler *chi.Mux) interface{} {
     return func(ctx context.Context, req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
-        chiAdapter = chiadapter.New(handler)
-        return chiAdapter.Proxy(req)
+        chiLambda := chiadapter.New(handler)
+        return chiLambda.Proxy(req)
     }
 }
