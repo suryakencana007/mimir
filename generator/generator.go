@@ -24,7 +24,7 @@ func init() {
 }
 
 // GenerateVoucher Generate Voucher using Alphanumeric except O & 0 return as String
-func CharRandom(length int) string {
+func RandomChar(length int) string {
 
     b := make([]byte, length)
     // A rand.Int63() generates 63 random bits, enough for letterIdxMax letters!
