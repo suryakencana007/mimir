@@ -18,6 +18,11 @@ import (
     "github.com/suryakencana007/mimir/log"
 )
 
+type ArgsTx struct {
+    Query string
+    Args  []interface{}
+}
+
 // DBFactory is an abstract for sql database
 type DBFactory interface {
     OpenConnection(connString string, retry, timeout, concurrent int)
@@ -26,6 +31,7 @@ type DBFactory interface {
     QueryRow(query string, args ...interface{}) (*sql.Row, error)
     Query(query string, args ...interface{}) (*sql.Rows, error)
     Exec(query string, args ...interface{}) (sql.Result, error)
+    TxExecMany(args []ArgsTx) error
     Prepare(query string) (*sql.Stmt, error)
     Begin() (*sql.Tx, error)
     BeginTx(ctx context.Context, opts *sql.TxOptions) (*sql.Tx, error)
@@ -89,7 +95,7 @@ func (r *DB) Exec(query string, args ...interface{}) (sql.Result, error) {
     return r.DB.Exec(query, args...)
 }
 
-// FetchRows the fetch data rows
+// QueryRows the fetch data rows
 func (r *DB) Query(query string, args ...interface{}) (rs *sql.Rows, err error) {
     if err = r.callBreaker(func() error {
         if r.DB == nil {
@@ -108,7 +114,7 @@ func (r *DB) Query(query string, args ...interface{}) (rs *sql.Rows, err error) 
     return rs, err
 }
 
-// FetchRow the fetch data row
+// QueryRow the fetch data row
 func (r *DB) QueryRow(query string, args ...interface{}) (rs *sql.Row, err error) {
     if err = r.callBreaker(func() (err error) {
         if r.DB == nil {
@@ -122,6 +128,65 @@ func (r *DB) QueryRow(query string, args ...interface{}) (rs *sql.Row, err error
         log.Error(err.Error(), log.Field("query", query), log.Field("args", args))
     }
     return rs, err
+}
+
+// Sql Transaction Tx Exec many
+func (r *DB) TxExecMany(args []ArgsTx) error {
+    return r.callBreaker(func() (err error) {
+        var tx *sql.Tx
+        tx, err = r.DB.Begin()
+        if err != nil {
+            return err
+        }
+        for _, arg := range args {
+            var stmt *sql.Stmt
+            if stmt, err = tx.Prepare(arg.Query); err != nil {
+                log.Error("TxExecMany:",
+                    log.Field("error", err.Error()),
+                    log.Field("query", arg.Query),
+                    log.Field("args", arg.Args),
+                )
+                return err
+            }
+            var result sql.Result
+
+            result, err = stmt.Exec(arg.Args...)
+            if err != nil {
+                log.Error("TxExecMany:",
+                    log.Field("error", err.Error()),
+                    log.Field("query", arg.Query),
+                    log.Field("args", arg.Args),
+                )
+                return err
+            }
+
+            _, err = result.RowsAffected()
+            if err != nil {
+                log.Error("TxExecMany:",
+                    log.Field("error", err.Error()),
+                    log.Field("query", arg.Query),
+                    log.Field("args", arg.Args),
+                )
+                return err
+            }
+            err = stmt.Close()
+            if err != nil {
+                return err
+            }
+        }
+        log.Info("commit transaction TxExecMany")
+        // commit db transaction
+        if err := tx.Commit(); err != nil {
+            if err = tx.Rollback(); err != nil {
+                log.Error("TxExecMany:",
+                    log.Field("error", err.Error()),
+                )
+                return err
+            } // rollback if fail query statement
+            return err
+        }
+        return nil
+    })
 }
 
 // SetCommandBreaker the circuit breaker
