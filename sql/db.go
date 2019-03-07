@@ -149,7 +149,6 @@ func (r *DB) TxExecMany(args []ArgsTx) error {
                 return err
             }
             var result sql.Result
-
             result, err = stmt.Exec(arg.Args...)
             if err != nil {
                 log.Error("TxExecMany:",
@@ -159,8 +158,7 @@ func (r *DB) TxExecMany(args []ArgsTx) error {
                 )
                 return err
             }
-
-            _, err = result.RowsAffected()
+            rowsAffected, err := result.RowsAffected()
             if err != nil {
                 log.Error("TxExecMany:",
                     log.Field("error", err.Error()),
@@ -169,12 +167,13 @@ func (r *DB) TxExecMany(args []ArgsTx) error {
                 )
                 return err
             }
+            log.Info("Commit Transaction TxExecMany", log.Field("RowsAffected", rowsAffected))
             err = stmt.Close()
             if err != nil {
                 return err
             }
         }
-        log.Info("commit transaction TxExecMany")
+        log.Info("Commit Transaction TxExecMany")
         // commit db transaction
         if err := tx.Commit(); err != nil {
             if err = tx.Rollback(); err != nil {
