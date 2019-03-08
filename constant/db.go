@@ -8,8 +8,11 @@
 
 package constant
 
+type dbConstKey string
+
 const (
-    MYSQL    = "mysql"
-    POSTGRES = "postgres"
+    TxKey         = dbConstKey("TxKey")
+    MYSQL         = dbConstKey("mysql")
+    POSTGRES      = dbConstKey("postgres")
     POSTGRES_CONN = `host=%s port=%d user=%s password=%s dbname=%s sslmode=disable`
 )
