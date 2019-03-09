@@ -10,7 +10,10 @@ package sql
 
 import (
     "database/sql"
+    "database/sql/driver"
     "encoding/json"
+    "fmt"
+    "time"
 )
 
 // NullInt64 is an alias for sql.NullInt64 data type
@@ -64,17 +67,31 @@ func (ns *NullString) MarshalJSON() ([]byte, error) {
     }
     return json.Marshal(ns.String)
 }
-//
-// // NullTime is an alias for mysql.NullTime data type
-// type NullTime struct {
-//     mysql.NullTime
-// }
-//
-// // MarshalJSON for NullTime
-// func (nt *NullTime) MarshalJSON() ([]byte, error) {
-//     if !nt.Valid {
-//         return []byte("null"), nil
-//     }
-//     val := fmt.Sprintf("\"%s\"", nt.Time.Format(time.RFC3339))
-//     return []byte(val), nil
-// }
+
+type NullTime struct {
+    Time  time.Time
+    Valid bool // Valid is true if Time is not NULL
+}
+
+// Scan implements the Scanner interface.
+func (nt *NullTime) Scan(value interface{}) error {
+    nt.Time, nt.Valid = value.(time.Time)
+    return nil
+}
+
+// Value implements the driver Valuer interface.
+func (nt NullTime) Value() (driver.Value, error) {
+    if !nt.Valid {
+        return nil, nil
+    }
+    return nt.Time, nil
+}
+
+// MarshalJSON for NullTime
+func (nt *NullTime) MarshalJSON() ([]byte, error) {
+    if !nt.Valid {
+        return []byte("null"), nil
+    }
+    val := fmt.Sprintf("\"%s\"", nt.Time.Format(time.RFC3339))
+    return []byte(val), nil
+}
