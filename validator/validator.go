@@ -18,10 +18,10 @@ import (
     "gopkg.in/go-playground/validator.v9"
 )
 
-type Validate struct {
+type ValidateStruct struct {
 }
 
-func (r *Validate) Validate() (errors []response.ErrorData) {
+func (r *ValidateStruct) Validate() (errors []response.ErrorData) {
     validate := validator.New()
     _ = validate.RegisterValidation("date", DateValidation)
     _ = validate.RegisterValidation("datetime", DatetimeValidation)
