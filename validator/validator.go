@@ -18,10 +18,7 @@ import (
     "gopkg.in/go-playground/validator.v9"
 )
 
-type ValidateStruct struct {
-}
-
-func (r *ValidateStruct) Validate() (errors []response.ErrorData) {
+func Validate(s interface{}) (errors []response.ErrorData) {
     validate := validator.New()
     _ = validate.RegisterValidation("date", DateValidation)
     _ = validate.RegisterValidation("datetime", DatetimeValidation)
@@ -34,7 +31,7 @@ func (r *ValidateStruct) Validate() (errors []response.ErrorData) {
         return name
     })
 
-    if err := validate.Struct(r); err != nil {
+    if err := validate.Struct(s); err != nil {
         for _, err := range err.(validator.ValidationErrors) {
             errors = append(errors, response.ErrorData{
                 Code:    err.Type().String(),
