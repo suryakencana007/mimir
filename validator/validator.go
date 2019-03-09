@@ -36,7 +36,7 @@ func Validate(s interface{}) (errors []response.ErrorData) {
             errors = append(errors, response.ErrorData{
                 Code:    err.Type().String(),
                 Key:     err.Field(),
-                Message: fmt.Sprintf("Invalid Type %s for input %s", err.Value().(string), err.Field()),
+                Message: fmt.Sprintf("Invalid Type %v for input %s", err.Value(), err.Field()),
             })
         }
         return errors
