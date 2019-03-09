@@ -9,10 +9,43 @@
 package validator
 
 import (
+    "fmt"
+    "reflect"
+    "strings"
     "time"
 
+    "github.com/suryakencana007/mimir/response"
     "gopkg.in/go-playground/validator.v9"
 )
+
+type Validate struct {
+}
+
+func (r *Validate) Validate() (errors []response.ErrorData) {
+    validate := validator.New()
+    _ = validate.RegisterValidation("date", DateValidation)
+    _ = validate.RegisterValidation("datetime", DatetimeValidation)
+    _ = validate.RegisterValidation("daterange", DateRangeValidation)
+    validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+        name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+        if name == "-" {
+            return ""
+        }
+        return name
+    })
+
+    if err := validate.Struct(r); err != nil {
+        for _, err := range err.(validator.ValidationErrors) {
+            errors = append(errors, response.ErrorData{
+                Code:    err.Type().String(),
+                Key:     err.Field(),
+                Message: fmt.Sprintf("Invalid Type %s for input %s", err.Value(), err.Field()),
+            })
+        }
+        return errors
+    }
+    return nil
+}
 
 func DateValidation(fl validator.FieldLevel) bool {
     _, err := time.Parse("2006-01-02", fl.Field().String())
