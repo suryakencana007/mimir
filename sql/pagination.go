@@ -97,7 +97,7 @@ func GetPagination(p *Pagination) (string, error) {
         }
     }
     sortedBy := strings.Join(sorted, ", ")
-    q := []string{p.Query}
+    q := []string{fmt.Sprintf(`SELECT * FROM (%s) as %s`, p.Query, p.Aka)}
     if len(filters) > 0 {
         q = append(q, strings.Replace(`WHERE ?`, "?", filters, 1)) // for Query Filtering
     }

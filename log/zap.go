@@ -6,7 +6,6 @@
 * @Last Modified time: 2019-02-12 11:39 
  */
 
-
 package log
 
 import (
@@ -219,4 +218,3 @@ func NewZapProductionEncoderConfig() zapcore.EncoderConfig {
         EncodeCaller:   zapcore.ShortCallerEncoder,
     }
 }
-

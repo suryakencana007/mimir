@@ -10,6 +10,7 @@ package response
 
 import (
     "bytes"
+    "context"
     "encoding/json"
     "net/http"
 
@@ -54,4 +55,8 @@ func WriteJSON(w http.ResponseWriter, r *http.Request, v interface{}) {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
+}
+
+func Status(r *http.Request, status int) {
+    *r = *r.WithContext(context.WithValue(r.Context(), constant.StatusCtxKey, status))
 }

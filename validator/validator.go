@@ -45,16 +45,14 @@ func Validate(s interface{}) (errors []response.ErrorData) {
 }
 
 func DateValidation(fl validator.FieldLevel) bool {
-    _, err := time.Parse("2006-01-02", fl.Field().String())
-    if err != nil {
+    if _, err := time.Parse("2006-01-02", fl.Field().String()); err != nil {
         return false
     }
     return true
 }
 
 func DatetimeValidation(fl validator.FieldLevel) bool {
-    _, err := time.Parse(time.RFC3339, fl.Field().String())
-    if err != nil {
+    if _, err := time.Parse(time.RFC3339, fl.Field().String()); err != nil {
         return false
     }
     return true
