@@ -10,25 +10,23 @@ package response
 
 import (
     "bytes"
-    "encoding/csv"
-    "fmt"
-    "log"
+    "encoding/json"
     "net/http"
 
     "github.com/suryakencana007/mimir/constant"
 )
 
 // Write writes the data to http response writer
-func WriteCSV(w http.ResponseWriter, r *http.Request, data []string, filename string) {
+func WriteJSON(w http.ResponseWriter, r *http.Request, v interface{}) {
     buf := &bytes.Buffer{}
-    xCsv := csv.NewWriter(buf)
-    if err := xCsv.Write(data); err != nil {
-        log.Println("error writing record to csv:", err)
+    enc := json.NewEncoder(buf)
+    enc.SetEscapeHTML(true)
+    if err := enc.Encode(v); err != nil {
         http.Error(w, err.Error(), http.StatusInternalServerError)
+        return
     }
-    w.Header().Set("Content-Description", "File Transfer")
-    w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s.csv", filename))
-    w.Header().Set("Content-Type", "text/csv; charset=utf-8")
+
+    w.Header().Set("Content-Type", "application/json; charset=utf-8")
     if status, ok := r.Context().Value(constant.StatusCtxKey).(int); ok {
         w.WriteHeader(status)
     }
