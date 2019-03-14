@@ -18,10 +18,19 @@ import (
     "github.com/suryakencana007/mimir/constant"
 )
 
-func WriteCSV(w http.ResponseWriter, r *http.Request, data []string, filename string) {
+func WriteCSV(w http.ResponseWriter, r *http.Request, rows [][]string, filename string) {
     buf := &bytes.Buffer{}
     xCsv := csv.NewWriter(buf)
-    if err := xCsv.Write(data); err != nil {
+
+    for _, row := range rows {
+        if err := xCsv.Write(row); err != nil {
+            log.Println("error writing record to csv:", err)
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+        }
+    }
+    xCsv.Flush()
+
+    if err := xCsv.Error(); err != nil {
         log.Println("error writing record to csv:", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
     }
