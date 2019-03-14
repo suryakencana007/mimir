@@ -10,43 +10,25 @@ package response
 
 import (
     "bytes"
-    "context"
-    "encoding/json"
+    "encoding/csv"
+    "fmt"
+    "log"
     "net/http"
 
     "github.com/suryakencana007/mimir/constant"
 )
 
-type ErrorValidation struct {
-    Errors interface{} `json:"errors"`
-}
-
-// APIResponse defines attributes for api Response
-type APIResponse struct {
-    HTTPCode   int         `json:"-"`
-    Code       int         `json:"code"`
-    Message    interface{} `json:"message"`
-    Data       interface{} `json:"data,omitempty"`
-    Pagination interface{} `json:"pagination,omitempty"`
-}
-
-type Pagination struct {
-    Page  int `json:"page"`
-    Size  int `json:"size"`
-    Total int `json:"total"`
-}
-
 // Write writes the data to http response writer
-func WriteJSON(w http.ResponseWriter, r *http.Request, v interface{}) {
+func WriteCSV(w http.ResponseWriter, r *http.Request, data []string, filename string) {
     buf := &bytes.Buffer{}
-    enc := json.NewEncoder(buf)
-    enc.SetEscapeHTML(true)
-    if err := enc.Encode(v); err != nil {
+    xCsv := csv.NewWriter(buf)
+    if err := xCsv.Write(data); err != nil {
+        log.Println("error writing record to csv:", err)
         http.Error(w, err.Error(), http.StatusInternalServerError)
-        return
     }
-
-    w.Header().Set("Content-Type", "application/json; charset=utf-8")
+    w.Header().Set("Content-Description", "File Transfer")
+    w.Header().Set("Content-Disposition", fmt.Sprintf("attachment; filename=%s.csv", filename))
+    w.Header().Set("Content-Type", "text/csv; charset=utf-8")
     if status, ok := r.Context().Value(constant.StatusCtxKey).(int); ok {
         w.WriteHeader(status)
     }
@@ -55,8 +37,4 @@ func WriteJSON(w http.ResponseWriter, r *http.Request, v interface{}) {
         http.Error(w, err.Error(), http.StatusInternalServerError)
         return
     }
-}
-
-func Status(r *http.Request, status int) {
-    *r = *r.WithContext(context.WithValue(r.Context(), constant.StatusCtxKey, status))
 }
