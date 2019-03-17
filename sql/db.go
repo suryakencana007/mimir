@@ -14,7 +14,7 @@ import (
     "errors"
     "time"
 
-    "github.com/afex/hystrix-go/hystrix"
+    "github.com/suryakencana007/mimir/breaker"
     "github.com/suryakencana007/mimir/log"
 )
 
@@ -47,7 +47,7 @@ type fallbackFunc func(error) error
 
 type DB struct {
     *sql.DB
-    commandName  *string
+    cb           *breaker.CircuitBreaker
     retryCount   int
     timeout      int
     concurrent   int
@@ -190,38 +190,17 @@ func (r *DB) TxExecMany(args []ArgsTx) error {
 
 // SetCommandBreaker the circuit breaker
 func (r *DB) SetCommandBreaker(commandName string, timeout, maxConcurrent int, args ...interface{}) *DB {
-    r.commandName = &commandName
-    if len(args) == 1 {
-        switch args[0].(type) {
-        case fallbackFunc:
-            r.fallbackFunc = args[0].(fallbackFunc)
-        }
-    }
-
-    hystrix.ConfigureCommand(commandName, hystrix.CommandConfig{
-        MaxConcurrentRequests: maxConcurrent,
-        Timeout:               timeout,
-        ErrorPercentThreshold: 25,
-    })
-
+    r.cb = breaker.NewBreaker(
+        commandName,
+        timeout,
+        maxConcurrent,
+        args...)
     return r
 }
 
 // callBreaker command circuit breaker
 func (r *DB) callBreaker(fn func() error) (err error) {
-    if r.commandName == nil {
-        return fn()
-    }
-    cn := *r.commandName
-    err = hystrix.Do(cn, func() error {
-        return fn()
-    }, nil)
-
-    if err != nil {
-        log.Error("Call Breaker",
-            log.Field("Hystrix Do", err))
-    }
-    return err
+    return r.cb.Execute(fn)
 }
 
 // GetQueryTimeout for circuit breaker
