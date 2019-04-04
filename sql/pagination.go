@@ -56,7 +56,7 @@ func GetPagination(p *Pagination) (string, error) {
                 p.Args = append(p.Args, p.Params.Get("q"))
             }
         }
-        filters = strings.Join(f, " OR ")
+        filters = fmt.Sprintf(`( %s )`, strings.Join(f, " OR "))
     }
     if len(filters) > 0 {
         sep = " AND "
