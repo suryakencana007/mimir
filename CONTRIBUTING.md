@@ -8,8 +8,7 @@ We appreciate pull requests; here are our guidelines:
     (if there isn't one already). If your patch
     is going to be large it might be a good idea to get the
     discussion started early.  We are happy to discuss it in a
-    new issue beforehand, and you can always email
-    <tech+heimdall@go-jek.com> about future work.
+    new issue beforehand, and you can always email about future work.
 
 2.  Please use [Effective Go Community Guidelines][3].
 
