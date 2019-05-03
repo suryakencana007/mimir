@@ -103,7 +103,7 @@ import (
 )
 
 func main() {
-    handler :=func() http.HandlerFunc { 
+    handler := func() http.HandlerFunc { 
         return func(w http.ResponseWriter, r *http.Request) {
             pagination := &sql.Pagination{
                 Params: r.URL.Query(),
@@ -134,7 +134,7 @@ import (
 )
 
 func main() {
-    handler :=func() http.HandlerFunc { 
+    handler := func() http.HandlerFunc { 
         return func(w http.ResponseWriter, r *http.Request) {
             pagination := &sql.Pagination{
                 Params: r.URL.Query(),
@@ -163,7 +163,7 @@ func main() {
 This package can be used by adding the following import statement to your `.go` files.
 
 ```go
-import "github.com/suryakencana007/mimir"
+    import "github.com/suryakencana007/mimir"
 ```
 
 ## FAQ
@@ -173,7 +173,7 @@ import "github.com/suryakencana007/mimir"
 ## License
  
  ```
- Copyright 2019, Nanang Suryadi (http://kubuskotak.com)
+ Copyright 2019, Nanang Suryadi (https://nulis.dev)
  
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
