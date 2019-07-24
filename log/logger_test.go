@@ -47,6 +47,16 @@ func TestZapLogger(t *testing.T) {
 	)
 }
 
+func TestLogger(t *testing.T) {
+	Info("received work order", Field("Key", "Key Field"))
+	Debug("starting work", Field("Key", "Key Field"))
+	Warn("work may fail", Field("Key", "Key Field"))
+	Error("work failed", Field("Key", "Key Field"))
+
+	assert.Panics(t, func() {
+		Panic("failed to do work", Field("Error", "Should panic"))
+	}, "log.Panic should panic")
+}
 // testLogSpy is a testing.TB that captures logged messages.
 type testLogSpy struct {
 	testing.TB
