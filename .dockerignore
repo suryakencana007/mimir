@@ -13,15 +13,10 @@
 
 # IDE metadata
 **.idea/**
-.idea/**
 
 # custom
 .DS_Store
 .serverless
 bin/**
-configs/app.config.toml
-configs/app.config.dev.toml
-configs/app.config.staging.toml
-configs/app.config.production.toml
-configs/app.config.local.toml
-package-lock.json
+notes.me
+**cert/**
