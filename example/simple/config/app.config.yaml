@@ -1,0 +1,18 @@
+# App configuration
+App:
+  name: laugh-tale
+  port: 8778
+  read_timeout: 5 # seconds
+  write_timeout: 10 # seconds
+  timezone: Asia/Jakarta
+  debug: false # (true|false)
+  env: development # ('development'|'staging'|'production')
+  secret_key: sekret
+  expire_in: 500
+CB:
+  retry_count: 3
+  db_timeout: 1000
+  max_concurrent: 5
+DB:
+  max_life_time: 30
+  max_idle_connection: 1

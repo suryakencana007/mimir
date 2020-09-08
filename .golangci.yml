@@ -1,0 +1,40 @@
+linters-settings:
+  govet:
+    check-shadowing: true
+  golint:
+    min-confidence: 0
+  gocyclo:
+    min-complexity: 25
+  maligned:
+    suggest-new: true
+  dupl:
+    threshold: 100
+  goconst:
+    min-len: 2
+    min-occurrences: 2
+
+linters:
+  enable:
+    - deadcode
+    - govet
+    - ineffassign
+    - staticcheck
+    - structcheck
+    - typecheck
+#    - unused
+    - varcheck
+    - bodyclose
+    - depguard
+    - gofmt
+    - gosec
+    - misspell
+    - nakedret
+    - prealloc
+    - scopelint
+    - unconvert
+  enable-all: false
+  disable-all: true
+  # presets:
+  #   - bugs
+  #   - unused
+  fast: false
