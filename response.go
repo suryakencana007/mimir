@@ -190,6 +190,46 @@ func (r *response) APIStatusUnProcess(w http.ResponseWriter, req *http.Request, 
 	return Status(w, req, StatusUnProcess, r)
 }
 
+// APIStatusMethodNotAllowed
+func (r *response) APIStatusMethodNotAllowed(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    StatusCode(StatusMethodNotAllowed),
+		Type:    StatusCode(StatusMethodNotAllowed),
+		Message: err.Error(),
+	})
+	return Status(w, req, StatusMethodNotAllowed, r)
+}
+
+// APIStatusNotAcceptable
+func (r *response) APIStatusNotAcceptable(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    StatusCode(StatusNotAcceptable),
+		Type:    StatusCode(StatusNotAcceptable),
+		Message: err.Error(),
+	})
+	return Status(w, req, StatusNotAcceptable, r)
+}
+
+// APIStatusUnsupportedMediaType
+func (r *response) APIStatusUnsupportedMediaType(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    StatusCode(StatusUnsupportedMediaType),
+		Type:    StatusCode(StatusUnsupportedMediaType),
+		Message: err.Error(),
+	})
+	return Status(w, req, StatusUnsupportedMediaType, r)
+}
+
+// APIStatusPermanentRedirect
+func (r *response) APIStatusPermanentRedirect(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    StatusCode(StatusPermanentRedirect),
+		Type:    StatusCode(StatusPermanentRedirect),
+		Message: err.Error(),
+	})
+	return Status(w, req, StatusPermanentRedirect, r)
+}
+
 type responseWriter struct {
 	Request  *http.Request
 	Writer   http.ResponseWriter
