@@ -230,6 +230,16 @@ func (r *response) APIStatusPermanentRedirect(w http.ResponseWriter, req *http.R
 	return Status(w, req, StatusPermanentRedirect, r)
 }
 
+// APIStatusPaymentRequired
+func (r *response) APIStatusPaymentRequired(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    StatusCode(StatusPaymentRequired),
+		Type:    StatusCode(StatusPaymentRequired),
+		Message: err.Error(),
+	})
+	return Status(w, req, StatusPaymentRequired, r)
+}
+
 type responseWriter struct {
 	Request  *http.Request
 	Writer   http.ResponseWriter
