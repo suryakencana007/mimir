@@ -9,13 +9,14 @@
 package mimir
 
 import (
-	"crypto/rand"
 	"encoding/json"
 	"errors"
-	"math/big"
+	"math/rand"
 	"reflect"
 	"regexp"
 	"strings"
+	"time"
+	"unsafe"
 
 	"github.com/satori/go.uuid"
 )
@@ -27,18 +28,15 @@ const (
 	letterIdxMax  = 63 / letterIdxBits                   // # of letter indices fitting in 63 bits
 )
 
+var src = rand.NewSource(time.Now().UnixNano())
+
 // GenerateVoucher Generate Voucher using Alphanumeric except O & 0 return as String
 func GenerateChar(length int) string {
-
 	b := make([]byte, length)
-	// A rand.Int63() generates 63 random bits, enough for letterIdxMax letters!
-	n, err := rand.Int(rand.Reader, big.NewInt(1000))
-	if err != nil {
-		return ""
-	}
-	for i, cache, remain := length-1, n.Int64(), letterIdxMax; i >= 0; {
+	// A src.Int63() generates 63 random bits, enough for letterIdxMax characters!
+	for i, cache, remain := length-1, src.Int63(), letterIdxMax; i >= 0; {
 		if remain == 0 {
-			cache, remain = n.Int64(), letterIdxMax
+			cache, remain = src.Int63(), letterIdxMax
 		}
 		if idx := int(cache & letterIdxMask); idx < len(letterBytes) {
 			b[i] = letterBytes[idx]
@@ -48,7 +46,7 @@ func GenerateChar(length int) string {
 		remain--
 	}
 
-	return string(b)
+	return *(*string)(unsafe.Pointer(&b))
 }
 
 var numberSequence = regexp.MustCompile(`([a-zA-Z])(\d+)([a-zA-Z]?)`)
