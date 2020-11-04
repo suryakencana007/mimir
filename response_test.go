@@ -14,6 +14,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"strings"
 	"testing"
 
@@ -74,26 +75,26 @@ func TestNew(t *testing.T) {
 func TestResponseErrors(t *testing.T) {
 	errs := make([]Meta, 0)
 	errs = append(errs, Meta{
-		Code:    StatusCode(StatusErrorUnknown),
-		Type:    StatusCode(StatusErrorUnknown),
-		Message: "constraint unique key duplicate",
+		Code:    strconv.Itoa(StatusInternalError),
+		Type:    StatusCode(StatusInternalError),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusInternalError), "constraint unique key duplicate"),
 	})
 
 	r, err := http.NewRequest(http.MethodGet, "/", nil)
 	assert.NoError(t, err)
 	w := httptest.NewRecorder()
-	w.WriteHeader(StatusErrorUnknown) // set header code
-	if got, want := w.Code, StatusErrorUnknown; got != want {
+	w.WriteHeader(StatusInternalError) // set header code
+	if got, want := w.Code, StatusInternalError; got != want {
 		t.Fatalf("status code got: %d, want %d", got, want)
 	}
 
 	result := Response(r)
-	result.APIStatusErrorUnknown(w, r,
-		fmt.Errorf("%s", errs[0].Message),
+	result.APIStatusInternalError(w, r,
+		fmt.Errorf("%s", "constraint unique key duplicate"),
 	).WriteJSON()
 	assert.Equal(t, result.Meta, errs)
-	assert.Equal(t, "STATUS_BAG_GATEWAY", result.Meta.([]Meta)[0].Code)
-	assert.Equal(t, "constraint unique key duplicate", result.Meta.([]Meta)[0].Message)
+	assert.Equal(t, strconv.Itoa(StatusInternalError), result.Meta.([]Meta)[0].Code)
+	assert.Contains(t, result.Meta.([]Meta)[0].Message, "constraint unique key duplicate")
 }
 
 func TestResponseErrorsJSON(t *testing.T) {
@@ -108,13 +109,15 @@ func TestResponseErrorsJSON(t *testing.T) {
 
 	errs := make([]Meta, 0)
 	errs = append(errs, Meta{
-		Code:    StatusCode(StatusInternalError),
+		Code:    strconv.Itoa(StatusInternalError),
 		Type:    StatusCode(StatusInternalError),
-		Message: "constraint unique key duplicate",
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusInternalError), "constraint unique key duplicate"),
 	})
 	result := Response(r)
 	result.Errors(errs...)
-	result.APIStatusInternalError(w, r, fmt.Errorf("%s", errs[0].Message)).WriteJSON()
+	result.APIStatusInternalError(w, r,
+		fmt.Errorf("%s", "constraint unique key duplicate"),
+	).WriteJSON()
 
 	expected, err := json.Marshal(result)
 	if err != nil {
@@ -127,8 +130,8 @@ func TestResponseErrorsJSON(t *testing.T) {
 	}
 
 	assert.Equal(t, result.Meta, errs)
-	assert.Equal(t, "INTERNAL_SERVER_ERROR", result.Meta.([]Meta)[0].Code)
-	assert.Equal(t, "constraint unique key duplicate", result.Meta.([]Meta)[0].Message)
+	assert.Equal(t, strconv.Itoa(StatusInternalError), result.Meta.([]Meta)[0].Code)
+	assert.Contains(t, result.Meta.([]Meta)[0].Message, "constraint unique key duplicate")
 	assert.Equal(t, string(expected), strings.TrimSuffix(string(actual), "\n"))
 }
 

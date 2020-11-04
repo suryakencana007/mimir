@@ -10,7 +10,9 @@ package mimir
 
 import (
 	"context"
+	"fmt"
 	"net/http"
+	"strconv"
 )
 
 type ctxKeyVersion struct {
@@ -105,7 +107,6 @@ func (r *response) Page(p Pagination) {
 func (r *response) APIStatusSuccess(w http.ResponseWriter, req *http.Request) *responseWriter {
 	r.Success(StatusSuccess)
 	return Status(w, req, StatusSuccess, r)
-
 }
 
 // APIStatusCreated
@@ -120,82 +121,62 @@ func (r *response) APIStatusAccepted(w http.ResponseWriter, req *http.Request) *
 	return Status(w, req, StatusAccepted, r)
 }
 
-// APIStatusInternalError
-func (r *response) APIStatusInternalError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+// APIStatusPermanentRedirect
+func (r *response) APIStatusPermanentRedirect(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
-		Code:    StatusCode(StatusInternalError),
-		Type:    StatusCode(StatusInternalError),
-		Message: err.Error(),
+		Code:    strconv.Itoa(StatusPermanentRedirect),
+		Type:    StatusCode(StatusPermanentRedirect),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusPermanentRedirect), err.Error()),
 	})
-	return Status(w, req, StatusInternalError, r)
-}
-
-// APIStatusErrorUnknown
-func (r *response) APIStatusErrorUnknown(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
-	r.Errors(Meta{
-		Code:    StatusCode(StatusErrorUnknown),
-		Type:    StatusCode(StatusErrorUnknown),
-		Message: err.Error(),
-	})
-	return Status(w, req, StatusErrorUnknown, r)
-}
-
-// APIStatusInvalidAuthentication
-func (r *response) APIStatusInvalidAuthentication(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
-	r.Errors(Meta{
-		Code:    StatusCode(StatusInvalidAuthentication),
-		Type:    StatusCode(StatusInvalidAuthentication),
-		Message: err.Error(),
-	})
-	return Status(w, req, StatusInvalidAuthentication, r)
-}
-
-// APIStatusUnauthorized
-func (r *response) APIStatusUnauthorized(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
-	r.Errors(Meta{
-		Code:    StatusCode(StatusUnauthorized),
-		Type:    StatusCode(StatusUnauthorized),
-		Message: err.Error(),
-	})
-	return Status(w, req, StatusUnauthorized, r)
-}
-
-// APIStatusForbidden
-func (r *response) APIStatusForbidden(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
-	r.Errors(Meta{
-		Code:    StatusCode(StatusForbidden),
-		Type:    StatusCode(StatusForbidden),
-		Message: err.Error(),
-	})
-	return Status(w, req, StatusForbidden, r)
+	return Status(w, req, StatusPermanentRedirect, r)
 }
 
 // APIStatusBadRequest
 func (r *response) APIStatusBadRequest(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
-		Code:    StatusCode(StatusErrorForm),
-		Type:    StatusCode(StatusErrorForm),
-		Message: err.Error(),
+		Code:    strconv.Itoa(StatusBadRequest),
+		Type:    StatusCode(StatusBadRequest),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusBadRequest), err.Error()),
 	})
-	return Status(w, req, StatusErrorForm, r)
+	return Status(w, req, StatusBadRequest, r)
 }
 
-// APIStatusUnProcess
-func (r *response) APIStatusUnProcess(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+// APIStatusUnauthorized
+func (r *response) APIStatusUnauthorized(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
-		Code:    StatusCode(StatusUnProcess),
-		Type:    StatusCode(StatusUnProcess),
-		Message: err.Error(),
+		Code:    strconv.Itoa(StatusUnauthorized),
+		Type:    StatusCode(StatusUnauthorized),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusUnauthorized), err.Error()),
 	})
-	return Status(w, req, StatusUnProcess, r)
+	return Status(w, req, StatusUnauthorized, r)
+}
+
+// APIStatusPaymentRequired
+func (r *response) APIStatusPaymentRequired(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    strconv.Itoa(StatusPaymentRequired),
+		Type:    StatusCode(StatusPaymentRequired),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusPaymentRequired), err.Error()),
+	})
+	return Status(w, req, StatusPaymentRequired, r)
+}
+
+// APIStatusForbidden
+func (r *response) APIStatusForbidden(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    strconv.Itoa(StatusForbidden),
+		Type:    StatusCode(StatusForbidden),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusForbidden), err.Error()),
+	})
+	return Status(w, req, StatusForbidden, r)
 }
 
 // APIStatusMethodNotAllowed
 func (r *response) APIStatusMethodNotAllowed(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
-		Code:    StatusCode(StatusMethodNotAllowed),
+		Code:    strconv.Itoa(StatusMethodNotAllowed),
 		Type:    StatusCode(StatusMethodNotAllowed),
-		Message: err.Error(),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusMethodNotAllowed), err.Error()),
 	})
 	return Status(w, req, StatusMethodNotAllowed, r)
 }
@@ -203,11 +184,31 @@ func (r *response) APIStatusMethodNotAllowed(w http.ResponseWriter, req *http.Re
 // APIStatusNotAcceptable
 func (r *response) APIStatusNotAcceptable(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
-		Code:    StatusCode(StatusNotAcceptable),
+		Code:    strconv.Itoa(StatusNotAcceptable),
 		Type:    StatusCode(StatusNotAcceptable),
-		Message: err.Error(),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusNotAcceptable), err.Error()),
 	})
 	return Status(w, req, StatusNotAcceptable, r)
+}
+
+// APIStatusInvalidAuthentication
+func (r *response) APIStatusInvalidAuthentication(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    strconv.Itoa(StatusInvalidAuthentication),
+		Type:    StatusCode(StatusInvalidAuthentication),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusInvalidAuthentication), err.Error()),
+	})
+	return Status(w, req, StatusInvalidAuthentication, r)
+}
+
+// APIStatusRequestTimeout
+func (r *response) APIStatusRequestTimeout(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    strconv.Itoa(StatusRequestTimeout),
+		Type:    StatusCode(StatusRequestTimeout),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusRequestTimeout), err.Error()),
+	})
+	return Status(w, req, StatusRequestTimeout, r)
 }
 
 // APIStatusUnsupportedMediaType
@@ -220,24 +221,54 @@ func (r *response) APIStatusUnsupportedMediaType(w http.ResponseWriter, req *htt
 	return Status(w, req, StatusUnsupportedMediaType, r)
 }
 
-// APIStatusPermanentRedirect
-func (r *response) APIStatusPermanentRedirect(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+// APIStatusUnProcess
+func (r *response) APIStatusUnProcess(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
-		Code:    StatusCode(StatusPermanentRedirect),
-		Type:    StatusCode(StatusPermanentRedirect),
-		Message: err.Error(),
+		Code:    strconv.Itoa(StatusUnProcess),
+		Type:    StatusCode(StatusUnProcess),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusUnProcess), err.Error()),
 	})
-	return Status(w, req, StatusPermanentRedirect, r)
+	return Status(w, req, StatusUnProcess, r)
 }
 
-// APIStatusPaymentRequired
-func (r *response) APIStatusPaymentRequired(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+// APIStatusInternalError
+func (r *response) APIStatusInternalError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
-		Code:    StatusCode(StatusPaymentRequired),
-		Type:    StatusCode(StatusPaymentRequired),
-		Message: err.Error(),
+		Code:    strconv.Itoa(StatusInternalError),
+		Type:    StatusCode(StatusInternalError),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusInternalError), err.Error()),
 	})
-	return Status(w, req, StatusPaymentRequired, r)
+	return Status(w, req, StatusInternalError, r)
+}
+
+// APIStatusBadGatewayError
+func (r *response) APIStatusBadGatewayError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    strconv.Itoa(StatusBadGatewayError),
+		Type:    StatusCode(StatusBadGatewayError),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusBadGatewayError), err.Error()),
+	})
+	return Status(w, req, StatusBadGatewayError, r)
+}
+
+// APIStatusServiceUnavailableError
+func (r *response) APIStatusServiceUnavailableError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    strconv.Itoa(StatusServiceUnavailableError),
+		Type:    StatusCode(StatusServiceUnavailableError),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusServiceUnavailableError), err.Error()),
+	})
+	return Status(w, req, StatusServiceUnavailableError, r)
+}
+
+// APIStatusGatewayTimeoutError
+func (r *response) APIStatusGatewayTimeoutError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+	r.Errors(Meta{
+		Code:    strconv.Itoa(StatusGatewayTimeoutError),
+		Type:    StatusCode(StatusGatewayTimeoutError),
+		Message: fmt.Sprintf("%s or %v", StatusText(StatusGatewayTimeoutError), err.Error()),
+	})
+	return Status(w, req, StatusGatewayTimeoutError, r)
 }
 
 type responseWriter struct {

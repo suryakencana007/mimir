@@ -27,7 +27,8 @@ func TestBase64(t *testing.T) {
 		t.Run(tt.title, func(t *testing.T) {
 			encode := Base64Encode([]byte(tt.word))
 			// assert.NoError(t, err)
-			decode := Base64Decode(encode)
+			decode, err := Base64Decode(encode)
+			assert.NoError(t, err)
 			assert.Equal(t, tt.word, string(decode))
 		})
 	}
