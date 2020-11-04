@@ -1,6 +1,6 @@
 # Mimir
 
-<p align="center"><img src="doc/mimir.jpg" width="360"></p>
+<p align="center"><img src="doc/mimir.png" width="360"></p>
 
 * [Description](#description)
 * [Installation](#installation)
