@@ -52,12 +52,8 @@ func Base64Encode(src []byte) (dst string) {
 
 // Base64Encode decodes using a Standard of base64.
 // return string base64 encode
-func Base64Decode(src string) (dst []byte) {
-	decode, err := base64.StdEncoding.DecodeString(src)
-	if err != nil {
-		panic(err)
-	}
-	return decode
+func Base64Decode(src string) (dst []byte, err error) {
+	return base64.StdEncoding.DecodeString(src)
 }
 
 func HashPassword(password, salt string) string {

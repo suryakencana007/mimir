@@ -105,39 +105,52 @@ const (
 )
 
 const (
-	StatusSuccess               = http.StatusOK
-	StatusErrorForm             = http.StatusBadRequest
-	StatusErrorUnknown          = http.StatusBadGateway
-	StatusInternalError         = http.StatusInternalServerError
+	// 2xx
+	StatusSuccess  = http.StatusOK
+	StatusCreated  = http.StatusCreated
+	StatusAccepted = http.StatusAccepted
+	// 3xx
+	StatusPermanentRedirect = http.StatusPermanentRedirect
+	// 4xx
+	StatusBadRequest            = http.StatusBadRequest
 	StatusUnauthorized          = http.StatusUnauthorized
-	StatusCreated               = http.StatusCreated
-	StatusAccepted              = http.StatusAccepted
-	StatusForbidden             = http.StatusForbidden
-	StatusInvalidAuthentication = http.StatusProxyAuthRequired
-	StatusUnProcess             = http.StatusUnprocessableEntity
 	StatusPaymentRequired       = http.StatusPaymentRequired
+	StatusForbidden             = http.StatusForbidden
 	StatusMethodNotAllowed      = http.StatusMethodNotAllowed
 	StatusNotAcceptable         = http.StatusNotAcceptable
+	StatusInvalidAuthentication = http.StatusProxyAuthRequired
+	StatusRequestTimeout        = http.StatusRequestTimeout
 	StatusUnsupportedMediaType  = http.StatusUnsupportedMediaType
-	StatusPermanentRedirect     = http.StatusPermanentRedirect
+	StatusUnProcess             = http.StatusUnprocessableEntity
+	//5xx
+	StatusInternalError           = http.StatusInternalServerError
+	StatusBadGatewayError         = http.StatusBadGateway
+	StatusServiceUnavailableError = http.StatusServiceUnavailable
+	StatusGatewayTimeoutError     = http.StatusGatewayTimeout
 )
 
 var statusMap = map[int][]string{
-	StatusSuccess:               {"STATUS_OK", "Success"},
-	StatusErrorForm:             {"STATUS_BAD_REQUEST", "Invalid data request"},
-	StatusErrorUnknown:          {"STATUS_BAG_GATEWAY", "Oops something went wrong"},
-	StatusInternalError:         {"INTERNAL_SERVER_ERROR", "Oops something went wrong"},
+	StatusSuccess:  {"STATUS_OK", "Success"},
+	StatusCreated:  {"STATUS_CREATED", "Resource has been created"},
+	StatusAccepted: {"STATUS_ACCEPTED", "Resource has been accepted"},
+
+	StatusPermanentRedirect: {"STATUS_PERMANENT_REDIRECT", "The resource has moved to a new location"},
+
+	StatusBadRequest:            {"STATUS_BAD_REQUEST", "Invalid data request"},
 	StatusUnauthorized:          {"STATUS_UNAUTHORIZED", "Not authorized to access the service"},
-	StatusCreated:               {"STATUS_CREATED", "Resource has been created"},
-	StatusAccepted:              {"STATUS_ACCEPTED", "Resource has been accepted"},
-	StatusForbidden:             {"STATUS_FORBIDDEN", "Forbidden access the resource "},
-	StatusInvalidAuthentication: {"STATUS_INVALID_AUTHENTICATION", "The resource owner or authorization server denied the request"},
-	StatusUnProcess:             {"STATUS_UNPROCESSABLE_ENTITY", "Unable to process the contained instructions"},
 	StatusPaymentRequired:       {"STATUS_PAYMENT_REQUIRED", "Payment need to be done"},
+	StatusForbidden:             {"STATUS_FORBIDDEN", "Forbidden access the resource "},
 	StatusMethodNotAllowed:      {"STATUS_METHOD_NOT_ALLOWED", "The method specified is not allowed"},
 	StatusNotAcceptable:         {"STATUS_NOT_ACCEPTABLE", "Request cannot accepted"},
+	StatusInvalidAuthentication: {"STATUS_INVALID_AUTHENTICATION", "The resource owner or authorization server denied the request"},
+	StatusRequestTimeout:        {"STATUS_REQUEST_TIMEOUT", "Request Timeout"},
 	StatusUnsupportedMediaType:  {"STATUS_UNSUPPORTED_MEDIA_TYPE", "Cannot understand request content"},
-	StatusPermanentRedirect:     {"STATUS_PERMANENT_REDIRECT", "The resource has moved to a new location"},
+	StatusUnProcess:             {"STATUS_UNPROCESSABLE_ENTITY", "Unable to process the contained instructions"},
+
+	StatusInternalError:           {"INTERNAL_SERVER_ERROR", "Oops something went wrong"},
+	StatusBadGatewayError:         {"STATUS_BAD_GATEWAY_ERROR", "Oops something went wrong"},
+	StatusServiceUnavailableError: {"STATUS_SERVICE_UNAVAILABLE_ERROR", "Service Unavailable"},
+	StatusGatewayTimeoutError:     {"STATUS_GATEWAY_TIMEOUT_ERROR", "Gateway Timeout"},
 }
 
 func StatusCode(code int) string {
