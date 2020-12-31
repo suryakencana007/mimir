@@ -18,6 +18,7 @@ import (
 	"time"
 	"unsafe"
 
+	"github.com/oklog/ulid/v2"
 	"github.com/satori/go.uuid"
 )
 
@@ -96,6 +97,13 @@ func ToCamel(s string) string {
 // interface.
 func UUID() string {
 	return uuid.NewV4().String()
+}
+
+// Universally Unique Lexicographically Sortable Identifier
+func ULID() ulid.ULID {
+	t := time.Unix(1000000, 0)
+	entropy := ulid.Monotonic(rand.New(rand.NewSource(t.UnixNano())), 0)
+	return ulid.MustNew(ulid.Timestamp(t), entropy)
 }
 
 var (

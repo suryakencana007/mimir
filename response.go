@@ -1,4 +1,4 @@
-/*  response.go
+/*  Respond.go
 *
 * @Author:             Nanang Suryadi
 * @Date:               November 21, 2019
@@ -32,7 +32,7 @@ func (r *ctxKeyResponse) String() string {
 }
 
 var (
-	CtxResponse = ctxKeyResponse{Name: "context response"}
+	CtxResponse = ctxKeyResponse{Name: "context Respond"}
 	CtxVersion  = ctxKeyVersion{Name: "context version"}
 )
 
@@ -61,16 +61,16 @@ type Version struct {
 	Number string `json:"number,omitempty"`
 }
 
-type response struct {
+type Respond struct {
 	Version    interface{} `json:"version,omitempty"`
 	Meta       interface{} `json:"meta,omitempty"`
 	Data       interface{} `json:"data,omitempty"`
 	Pagination interface{} `json:"pagination,omitempty"`
 }
 
-func Response(r *http.Request) *response {
+func Response(r *http.Request) *Respond {
 	null := make(map[string]interface{})
-	resp := &response{
+	resp := &Respond{
 		Version: Version{
 			Label:  "v1",
 			Number: "0.1.0",
@@ -85,44 +85,44 @@ func Response(r *http.Request) *response {
 	return resp
 }
 
-func (r *response) Errors(err ...Meta) *response {
+func (r *Respond) Errors(err ...Meta) *Respond {
 	r.Meta = err
 	return r
 }
 
-func (r *response) Success(code int) *response {
+func (r *Respond) Success(code int) *Respond {
 	r.Meta = Meta{Code: StatusText(code)}
 	return r
 }
 
-func (r *response) Body(body interface{}) {
+func (r *Respond) Body(body interface{}) {
 	r.Data = body
 }
 
-func (r *response) Page(p Pagination) {
+func (r *Respond) Page(p Pagination) {
 	r.Pagination = p
 }
 
 // APIStatusSuccess for standard request api status success
-func (r *response) APIStatusSuccess(w http.ResponseWriter, req *http.Request) *responseWriter {
+func (r *Respond) APIStatusSuccess(w http.ResponseWriter, req *http.Request) *responseWriter {
 	r.Success(StatusSuccess)
 	return Status(w, req, StatusSuccess, r)
 }
 
 // APIStatusCreated
-func (r *response) APIStatusCreated(w http.ResponseWriter, req *http.Request) *responseWriter {
+func (r *Respond) APIStatusCreated(w http.ResponseWriter, req *http.Request) *responseWriter {
 	r.Success(StatusCreated)
 	return Status(w, req, StatusCreated, r)
 }
 
 // APIStatusAccepted
-func (r *response) APIStatusAccepted(w http.ResponseWriter, req *http.Request) *responseWriter {
+func (r *Respond) APIStatusAccepted(w http.ResponseWriter, req *http.Request) *responseWriter {
 	r.Success(StatusAccepted)
 	return Status(w, req, StatusAccepted, r)
 }
 
 // APIStatusPermanentRedirect
-func (r *response) APIStatusPermanentRedirect(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusPermanentRedirect(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusPermanentRedirect),
 		Type:    StatusCode(StatusPermanentRedirect),
@@ -132,7 +132,7 @@ func (r *response) APIStatusPermanentRedirect(w http.ResponseWriter, req *http.R
 }
 
 // APIStatusBadRequest
-func (r *response) APIStatusBadRequest(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusBadRequest(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusBadRequest),
 		Type:    StatusCode(StatusBadRequest),
@@ -142,7 +142,7 @@ func (r *response) APIStatusBadRequest(w http.ResponseWriter, req *http.Request,
 }
 
 // APIStatusUnauthorized
-func (r *response) APIStatusUnauthorized(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusUnauthorized(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusUnauthorized),
 		Type:    StatusCode(StatusUnauthorized),
@@ -152,7 +152,7 @@ func (r *response) APIStatusUnauthorized(w http.ResponseWriter, req *http.Reques
 }
 
 // APIStatusPaymentRequired
-func (r *response) APIStatusPaymentRequired(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusPaymentRequired(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusPaymentRequired),
 		Type:    StatusCode(StatusPaymentRequired),
@@ -162,7 +162,7 @@ func (r *response) APIStatusPaymentRequired(w http.ResponseWriter, req *http.Req
 }
 
 // APIStatusForbidden
-func (r *response) APIStatusForbidden(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusForbidden(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusForbidden),
 		Type:    StatusCode(StatusForbidden),
@@ -172,7 +172,7 @@ func (r *response) APIStatusForbidden(w http.ResponseWriter, req *http.Request, 
 }
 
 // APIStatusMethodNotAllowed
-func (r *response) APIStatusMethodNotAllowed(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusMethodNotAllowed(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusMethodNotAllowed),
 		Type:    StatusCode(StatusMethodNotAllowed),
@@ -182,7 +182,7 @@ func (r *response) APIStatusMethodNotAllowed(w http.ResponseWriter, req *http.Re
 }
 
 // APIStatusNotAcceptable
-func (r *response) APIStatusNotAcceptable(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusNotAcceptable(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusNotAcceptable),
 		Type:    StatusCode(StatusNotAcceptable),
@@ -192,7 +192,7 @@ func (r *response) APIStatusNotAcceptable(w http.ResponseWriter, req *http.Reque
 }
 
 // APIStatusInvalidAuthentication
-func (r *response) APIStatusInvalidAuthentication(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusInvalidAuthentication(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusInvalidAuthentication),
 		Type:    StatusCode(StatusInvalidAuthentication),
@@ -202,7 +202,7 @@ func (r *response) APIStatusInvalidAuthentication(w http.ResponseWriter, req *ht
 }
 
 // APIStatusRequestTimeout
-func (r *response) APIStatusRequestTimeout(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusRequestTimeout(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusRequestTimeout),
 		Type:    StatusCode(StatusRequestTimeout),
@@ -212,7 +212,7 @@ func (r *response) APIStatusRequestTimeout(w http.ResponseWriter, req *http.Requ
 }
 
 // APIStatusUnsupportedMediaType
-func (r *response) APIStatusUnsupportedMediaType(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusUnsupportedMediaType(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    StatusCode(StatusUnsupportedMediaType),
 		Type:    StatusCode(StatusUnsupportedMediaType),
@@ -222,7 +222,7 @@ func (r *response) APIStatusUnsupportedMediaType(w http.ResponseWriter, req *htt
 }
 
 // APIStatusUnProcess
-func (r *response) APIStatusUnProcess(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusUnProcess(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusUnProcess),
 		Type:    StatusCode(StatusUnProcess),
@@ -232,7 +232,7 @@ func (r *response) APIStatusUnProcess(w http.ResponseWriter, req *http.Request, 
 }
 
 // APIStatusInternalError
-func (r *response) APIStatusInternalError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusInternalError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusInternalError),
 		Type:    StatusCode(StatusInternalError),
@@ -242,7 +242,7 @@ func (r *response) APIStatusInternalError(w http.ResponseWriter, req *http.Reque
 }
 
 // APIStatusBadGatewayError
-func (r *response) APIStatusBadGatewayError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusBadGatewayError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusBadGatewayError),
 		Type:    StatusCode(StatusBadGatewayError),
@@ -252,7 +252,7 @@ func (r *response) APIStatusBadGatewayError(w http.ResponseWriter, req *http.Req
 }
 
 // APIStatusServiceUnavailableError
-func (r *response) APIStatusServiceUnavailableError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusServiceUnavailableError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusServiceUnavailableError),
 		Type:    StatusCode(StatusServiceUnavailableError),
@@ -262,7 +262,7 @@ func (r *response) APIStatusServiceUnavailableError(w http.ResponseWriter, req *
 }
 
 // APIStatusGatewayTimeoutError
-func (r *response) APIStatusGatewayTimeoutError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
+func (r *Respond) APIStatusGatewayTimeoutError(w http.ResponseWriter, req *http.Request, err error) *responseWriter {
 	r.Errors(Meta{
 		Code:    strconv.Itoa(StatusGatewayTimeoutError),
 		Type:    StatusCode(StatusGatewayTimeoutError),
@@ -274,10 +274,10 @@ func (r *response) APIStatusGatewayTimeoutError(w http.ResponseWriter, req *http
 type responseWriter struct {
 	Request  *http.Request
 	Writer   http.ResponseWriter
-	Response *response
+	Response *Respond
 }
 
-func Status(w http.ResponseWriter, r *http.Request, status int, v *response) *responseWriter {
+func Status(w http.ResponseWriter, r *http.Request, status int, v *Respond) *responseWriter {
 	*r = *r.WithContext(context.WithValue(r.Context(), CtxResponse, status))
 	return &responseWriter{
 		Request:  r,
