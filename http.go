@@ -17,12 +17,12 @@ import (
 	"github.com/suryakencana007/mimir/ruuto"
 )
 
-func Velkommen() string {
+func Welkommen() string {
 	return `
 ========================================================================================
    _     _     _     _     _  
   / \   / \   / \   / \   / \ 
- ( s ) ( u ) ( k ) ( i ) ( ~ )
+ ( m ) ( i ) ( m ) ( i ) ( r )
   \_/   \_/   \_/   \_/   \_/ 
 ========================================================================================
 - port    : %d
@@ -73,7 +73,7 @@ func ListenAndServe(opts ServeOpts) (ServerRunFunc, func(context.Context)) {
 			// Description µ micro service
 			fmt.Println(
 				fmt.Sprintf(
-					Velkommen(),
+					Welkommen(),
 					opts.Port,
 				))
 			logger.Info(fmt.Sprintf("Now serving at %s", httpServer.Addr))

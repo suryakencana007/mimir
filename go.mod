@@ -9,6 +9,7 @@ require (
 	github.com/felixge/httpsnoop v1.0.1
 	github.com/go-chi/chi v4.1.2+incompatible
 	github.com/go-playground/validator/v10 v10.3.0
+	github.com/oklog/ulid/v2 v2.0.2
 	github.com/opentracing/opentracing-go v1.2.0
 	github.com/satori/go.uuid v1.2.0
 	github.com/spf13/viper v1.7.1

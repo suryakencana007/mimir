@@ -14,7 +14,7 @@ import (
 	"net/http"
 )
 
-// Write writes the data to http response writer
+// Write writes the data to http Respond writer
 func (r *responseWriter) WriteJSON() {
 	buf := &bytes.Buffer{}
 	enc := json.NewEncoder(buf)
